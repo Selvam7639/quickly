@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: order-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/quickly
+    username: quickly
+    password: quickly
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: orders
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    schemas: orders
+
+
+

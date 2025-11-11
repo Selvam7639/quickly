@@ -1,5 +1,5 @@
 server:
-  port: 0   # random port; we'll access via Gateway
+  port: 0
 
 spring:
   application:

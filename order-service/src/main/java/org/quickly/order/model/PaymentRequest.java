@@ -1,6 +1,16 @@
 package org.quickly.order.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public record PaymentRequest(UUID orderId, BigDecimal amount) {}
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class PaymentRequest {
+    private UUID orderId;
+    private BigDecimal amount;
+}

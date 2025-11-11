@@ -1,38 +1,40 @@
 package org.quickly.catalog.service;
 
+import org.quickly.catalog.entity.Product;
+import org.quickly.catalog.mapper.ProductMapper;
 import org.quickly.catalog.model.ProductDto;
+import org.quickly.catalog.repo.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@Transactional
 public class ProductService {
-    private final Map<UUID, ProductDto> store = new ConcurrentHashMap<>();
 
-    public ProductService() {
-        // seed one sample
-        var seedId = UUID.randomUUID();
-        store.put(seedId, new ProductDto(seedId, "BAN-1", "Banana", new BigDecimal("10.00"), "Fresh bananas"));
-    }
+    private final ProductRepository repo;
 
+    public ProductService(ProductRepository repo) { this.repo = repo; }
+
+    @Transactional(readOnly = true)
     public List<ProductDto> all() {
-        return new ArrayList<>(store.values());
+        return repo.findAll().stream().map(ProductMapper::toDto).toList();
     }
 
+    @Transactional(readOnly = true)
     public Optional<ProductDto> byId(UUID id) {
-        return Optional.ofNullable(store.get(id));
+        return repo.findById(id).map(ProductMapper::toDto);
     }
 
     public ProductDto create(ProductDto request) {
-        UUID id = UUID.randomUUID();
-        ProductDto saved = new ProductDto(id, request.sku(), request.name(), request.price(), request.description());
-        store.put(id, saved);
-        return saved;
+        Product saved = repo.save(ProductMapper.toEntity(request));
+        return ProductMapper.toDto(saved);
     }
 
     public void delete(UUID id) {
-        store.remove(id);
+        repo.deleteById(id);
     }
 }
